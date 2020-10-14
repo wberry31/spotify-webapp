@@ -42,9 +42,7 @@ class About extends React.Component {
                             <div className="col-md-12 animate-box">
                                 <article>
                                     <h2>This Playlist's Mood:</h2>
-                                    <p className="admin"><span>May 12, 2018</span></p>
-                                    <p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life</p>
-                                    <p><span className="author">by Dave Miller</span></p>
+                                    <p>Give audio descriptions for the tracks on the playlist</p>
                                 </article>
                             </div>
                         </div>

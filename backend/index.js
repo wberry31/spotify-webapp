@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const connection = require('./knexfile');
+const database = require('knex')(connection);
 
 require('dotenv').config();
 
@@ -11,6 +13,8 @@ const app = express();
 app.use(require('morgan')('dev'));
 app.use(bodyParser.json());
 app.use(cors())
+
+app.locals.db = database;
 
 app.use(require('./routes'))
 

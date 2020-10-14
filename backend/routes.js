@@ -15,14 +15,18 @@ router.post('/link-spotify', (req, res) => {
             'Authorization': `Basic ${basic_auth}`,
             'Content-Type': 'application/x-www-form-urlencoded'
           }
-    }).then(response => {
+    }).then(async (response) => {
+        const user = await req.app.locals.db('users').insert({
+            access_token: response.data.access_token,
+            refresh_token: response.data.refresh_token,
+            expiration: new Date(new Date() + parseInt(response.data.expires_in)).toISOString()
+        });
+
         res.json({
             token: jwt.sign({
-                access_token: response.data.access_token,
-                refresh_token: response.data.refresh_token,
-                expires_in: response.data.expires_in
+                id: user.id
             }, process.env.SECRET)
-        })
+        });
     })
 });
 
