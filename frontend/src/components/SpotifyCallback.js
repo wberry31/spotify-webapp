@@ -19,13 +19,14 @@ class SpotifyCallback extends React.Component {
             code: code
         }).then((response) => {
             setAPIToken(response.data.token);
+            localStorage.setItem('token', response.data.token);
             this.setState({loggedIn: true});
         });
     }
 
     render() {
         if (this.state.loggedIn) {
-            return <Redirect to="/" />
+            return <Redirect to="/home" />
         }
 
         return null

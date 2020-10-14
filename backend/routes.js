@@ -3,6 +3,8 @@ const axios = require('axios');
 const qs = require('qs');
 const jwt = require('jsonwebtoken');
 
+const auth = require('./auth');
+
 const basic_auth = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64')
 
 router.post('/link-spotify', (req, res) => {
@@ -16,7 +18,7 @@ router.post('/link-spotify', (req, res) => {
             'Content-Type': 'application/x-www-form-urlencoded'
           }
     }).then(async (response) => {
-        const user = await req.app.locals.db('users').insert({
+        const result = await req.app.locals.db('users').insert({
             access_token: response.data.access_token,
             refresh_token: response.data.refresh_token,
             expiration: new Date(new Date() + parseInt(response.data.expires_in)).toISOString()
@@ -24,10 +26,28 @@ router.post('/link-spotify', (req, res) => {
 
         res.json({
             token: jwt.sign({
-                id: user.id
+                id: result[0]
             }, process.env.SECRET)
         });
     })
 });
+
+router.get('/top-artist', auth, async (req, res) => {
+    const user = await req.app.locals.db('users').where({ id: req.payload.id })
+    const access_token = user[0].access_token
+
+    axios.get('https://api.spotify.com/v1/me/top/artists', {
+        params: {
+            limit: 1
+        },
+        headers: {
+            'Authorization': `Bearer ${access_token}`
+          }
+    }).then(apiResponse => {
+        res.json({
+            topArtist: apiResponse.data.items[0].name
+        })
+    })
+})
 
 module.exports = router;
