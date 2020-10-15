@@ -9,17 +9,25 @@ class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            topArtist: null
+            artists: [],
+            tracks:[]
         }
     }
 
     componentDidMount() {
         api.get('/top-artist').then(response => {
             this.setState({
-                topArtist: response.data.topArtist
+                artists: response.data.artists
+            })
+        })
+        api.get('/top-track').then(response => {
+            console.log(response.data.tracks)
+            this.setState({
+                tracks: response.data.tracks
             })
         })
     }
+
 
     render() {
         return (
@@ -27,7 +35,7 @@ class Home extends React.Component {
                 <Navbar active="home" />
                 <Header>
                     YOUR TOP ARTISTS AND TRACKS
-                    <h4> Enter profile pic </h4>
+                    <p> Enter profile pic </p>
                 </Header>
                 <div className="colorlib-services">
                     <div className="container">
@@ -38,103 +46,21 @@ class Home extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="container">
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>{ this.state.topArtist }</h3>
+                    <div className="container">
+                        <div className="row">
+                            { this.state.artists.map((artist, index) => (
+                                <div className="col-md-4 text-center animate-box" key={artist.id}>
+                                    <div className="staff-entry">
+                                        <div className="desc">
+                                            <h3>{ artist.name }</h3>
+                                            <span>{ index + 1 }</span>
+                                            <p>Follower Count: { artist.followers.total }</p>
+                                            <p>Popularity: { artist.popularity }</p>
+                                            <img src={artist.images[2].url} className="img-fluid" />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Artist</h3>
-                                        <span>2</span>
-                                        <p>Follower Count:</p>
-                                        <p>Popularity:</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Artist</h3>
-                                        <span>3</span>
-                                        <p>Follower Count:</p>
-                                        <p>Popularity:</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="container">
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Artist</h3>
-                                        <span>4</span>
-                                        <p>Follower Count:</p>
-                                        <p>Popularity:</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Artist</h3>
-                                        <span>5</span>
-                                        <p>Follower Count:</p>
-                                        <p>Popularity:</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Artist</h3>
-                                        <span>6</span>
-                                        <p>Follower Count:</p>
-                                        <p>Popularity:</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="container">
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Artist</h3>
-                                        <span>7</span>
-                                        <p>Follower Count:</p>
-                                        <p>Popularity:</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Artist</h3>
-                                        <span>8</span>
-                                        <p>Follower Count:</p>
-                                        <p>Popularity:</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Artist</h3>
-                                        <span>9</span>
-                                        <p>Follower Count:</p>
-                                        <p>Popularity:</p>
-                                    </div>
-                                </div>
-                            </div>
+                            )) }
                         </div>
                     </div>
                     <div className="container">
@@ -145,99 +71,24 @@ class Home extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="container">
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Track</h3>
-                                        <span>1</span>
-                                        <p>Artist</p>
+                    <div className="container">
+                        <div className="row">
+                            { this.state.tracks.map((track, index) => (
+                                <div className="col-md-4 text-center animate-box">
+                                    <div className="staff-entry">
+                                        <div className="desc">
+                                            <h3>{ track.name }</h3>
+                                            <span>{ index + 1 }</span>
+                                            <p>Artist: { track.artists[0].name }</p>
+                                            <p>Album: { track.album.name }</p>
+                                            <p>Popularity: { track.popularity }</p>
+                                            <img src={track.album.images[2].url} className="img-fluid" />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Track</h3>
-                                        <span>2</span>
-                                        <p>Artist</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Track</h3>
-                                        <span>3</span>
-                                        <p>Artist</p>
-                                    </div>
-                                </div>
-                            </div>
+                            )) }
                         </div>
-                    </div>
-                    <div className="row">
-                        <div className="container">
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Track</h3>
-                                        <span>4</span>
-                                        <p>Artist</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Track</h3>
-                                        <span>5</span>
-                                        <p>Artist</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Track</h3>
-                                        <span>6</span>
-                                        <p>Artist</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="container">
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Track</h3>
-                                        <span>7</span>
-                                        <p>Artist</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Track</h3>
-                                        <span>8</span>
-                                        <p>Artist</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4 text-center animate-box">
-                                <div className="staff-entry">
-                                    <div className="desc">
-                                        <h3>Track</h3>
-                                        <span>9</span>
-                                        <p>Artist</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </div>    
                 </div>
             </div>
         )

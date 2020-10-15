@@ -38,16 +38,36 @@ router.get('/top-artist', auth, async (req, res) => {
 
     axios.get('https://api.spotify.com/v1/me/top/artists', {
         params: {
-            limit: 1
+            limit: 9
         },
         headers: {
             'Authorization': `Bearer ${access_token}`
           }
     }).then(apiResponse => {
         res.json({
-            topArtist: apiResponse.data.items[0].name
+            artists: apiResponse.data.items
         })
     })
 })
+
+router.get('/top-track', auth, async (req, res) => {
+    const user = await req.app.locals.db('users').where({ id: req.payload.id })
+    const access_token = user[0].access_token
+
+    axios.get('https://api.spotify.com/v1/me/top/tracks', {
+        params: {
+            limit: 9
+        },
+        headers: {
+            'Authorization': `Bearer ${access_token}`
+          }
+    }).then(apiResponse => {
+        res.json({
+            tracks: apiResponse.data.items
+        })
+    })
+})
+
+
 
 module.exports = router;
